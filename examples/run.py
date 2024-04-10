@@ -19,6 +19,7 @@ def main():
         help="directory of freeciv-web repo",
     )
     webdir = parser.parse_known_args()[0].webdir
+    print(webdir)
     assert os.path.exists(webdir), f"Cannot find directory of freeciv-web repo, {webdir}"
     def web_docker_cmd(cmd):
             subprocess.call(f"cd {webdir} && "+cmd, shell=True, executable='/bin/bash')
@@ -37,7 +38,7 @@ def main():
 
     # start training
     from civtensor.runners.runner import Runner
-
+    print('config_args =',config_args)
     for config_arg in config_args:
         (runner_args, run_times) = config_arg
         for i in range(run_times):

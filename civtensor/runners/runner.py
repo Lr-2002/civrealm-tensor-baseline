@@ -213,8 +213,7 @@ class Runner:
                 rnn_hidden_state[done == True] = np.zeros(
                     (
                         (done == True).sum(),
-                        self.n_rnn_layers,
-                        self.rnn_hidden_dim,
+                        self.n_rnn_layers,                        self.rnn_hidden_dim,
                     )
                 )
 

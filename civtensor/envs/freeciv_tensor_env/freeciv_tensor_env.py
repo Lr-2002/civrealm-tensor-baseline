@@ -71,7 +71,7 @@ class TensorBaselineEnv:
             "gov_action_type_mask",
             "tech_action_type_mask",
         ]:
-            obs[key] = np.stack([obs_single[key] for obs_single in obs_ori])
+                obs[key] = np.stack([obs_single[key] for obs_single in obs_ori])
         return obs
 
     def step(self, actions_ori):

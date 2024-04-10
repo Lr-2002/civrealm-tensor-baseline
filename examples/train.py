@@ -44,6 +44,7 @@ def main():
     values = [process(v) for v in unparsed_args[1::2]]
     unparsed_dict = {k: v for k, v in zip(keys, values)}
     args = vars(args)  # convert to dict
+    # print(args)
     if args["load_config"] != "":  # load config from existing config file
         with open(args["load_config"], encoding="utf-8") as file:
             all_config = json.load(file)
@@ -55,6 +56,8 @@ def main():
     else:  # load config from corresponding yaml file
         algo_args, env_args = get_defaults_yaml_args(args["algo"], args["env"])
     update_args(unparsed_dict, algo_args, env_args)  # update args from command line
+    env_args['task_name'] = 'fullgame_50_turn_objectives'
+    # print(env_args)
 
     # start training
     from civtensor.runners.runner import Runner

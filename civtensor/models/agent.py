@@ -152,7 +152,7 @@ class Agent(nn.Module):
 
         # initialize rnn.
         self.rnn = RNNLayer(
-            9 * self.hidden_dim,
+            11 * self.hidden_dim,
             self.rnn_hidden_dim,
             self.n_rnn_layers,
             self.initialization_method,

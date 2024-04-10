@@ -34,6 +34,8 @@ class FreecivTensorLogger:
     def per_step(self, data):
         """Process data per step."""
         (
+            token,
+            token_embed,
             rules,
             player,
             others_player,
@@ -175,6 +177,8 @@ class FreecivTensorLogger:
     def eval_per_step(self, eval_data):
         """Log evaluation information per step."""
         (
+            token,
+            token_embed,
             rules,
             player,
             other_players,

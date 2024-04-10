@@ -136,6 +136,8 @@ class Runner:
                         value_pred,
                         rnn_hidden_state,
                     ) = self.algo.agent(
+                        self.buffer.token_input[step],
+                        self.buffer.token_embed_input[step],
                         self.buffer.rules_input[step],
                         self.buffer.player_input[step],
                         self.buffer.others_player_input[step],
@@ -218,6 +220,8 @@ class Runner:
                 )
 
                 data = (
+                    obs['token'],
+                    obs['token_embed'],
                     obs["rules"],
                     obs["player"],
                     obs["others_player"],
@@ -302,6 +306,8 @@ class Runner:
 
     def warmup(self):
         obs = self.envs.reset()
+        self.buffer.token_input[0] = obs['token'].copy()
+        self.buffer.token_embed_input[0] = obs['token_embed'].copy()
         self.buffer.rules_input[0] = obs["rules"].copy()
         self.buffer.player_input[0] = obs["player"].copy()
         self.buffer.others_player_input[0] = obs["others_player"].copy()
@@ -350,6 +356,8 @@ class Runner:
             value_pred,
             rnn_hidden_state,
         ) = self.algo.agent(
+            self.buffer.token_input[-1],
+            self.buffer.token_embed_input[-1],
             self.buffer.rules_input[-1],
             self.buffer.player_input[-1],
             self.buffer.others_player_input[-1],
@@ -449,6 +457,8 @@ class Runner:
                 value_pred,
                 eval_rnn_hidden_state,
             ) = self.algo.agent(
+                token,
+                token_embed,
                 rules,
                 player,
                 others_player,
@@ -489,6 +499,8 @@ class Runner:
             eval_rnn_hidden_state = _t2n(eval_rnn_hidden_state)
 
             (
+                token,
+                token_embed,
                 rules,
                 player,
                 others_player,
@@ -538,6 +550,8 @@ class Runner:
             )
 
             eval_data = (
+                token,
+                token_embed,
                 rules,
                 player,
                 others_player,

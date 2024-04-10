@@ -25,6 +25,8 @@ class Buffer:
         # obtain input dimensions. TODO: be consistent with env
         self.rules_dim = self.observation_spaces["rules"].shape[0]
         self.player_dim = self.observation_spaces["player"].shape[0]
+        self.token_dim = self.observation_spaces['token'].shape[0]
+        self.token_embed_dim = self.observation_spaces["token_embed"].shape[0]
         self.others_player_dim = self.observation_spaces["others_player"].shape[
             1
         ]  # or Sequence?
@@ -59,6 +61,14 @@ class Buffer:
         # init buffers
         self.rules_input = np.zeros(
             (self.episode_length + 1, self.n_rollout_threads, self.rules_dim),
+            dtype=np.float32,
+        )
+        self.token_input = np.zeros(
+            (self.episode_length + 1, self.n_rollout_threads, self.token_dim),
+            dtype=np.int32,
+        )
+        self.token_embed_input = np.zeros(
+            (self.episode_length + 1, self.n_rollout_threads, self.token_embed_dim),
             dtype=np.float32,
         )
         self.player_input = np.zeros(
@@ -316,6 +326,8 @@ class Buffer:
     def insert(self, data):
         """Insert data into buffer."""
         (
+            token,
+            token_embed,
             rules,
             player,
             others_player,
@@ -364,6 +376,8 @@ class Buffer:
             value_pred,
         ) = data
 
+        self.token_input[self.step + 1] = token.copy()
+        self.token_embed_input[self.step + 1] = token_embed.copy()
         self.rules_input[self.step + 1] = rules.copy()
         self.player_input[self.step + 1] = player.copy()
         self.others_player_input[self.step + 1] = others_player.copy()
@@ -415,6 +429,8 @@ class Buffer:
 
     def after_update(self):
         """After an update, copy the data at the last step to the first position of the buffer."""
+        self.token_input[0] = self.token_input[-1].copy()
+        self.token_embed_input[0] = self.token_embed_input[-1].copy()
         self.rules_input[0] = self.rules_input[-1].copy()
         self.player_input[0] = self.player_input[-1].copy()
         self.others_player_input[0] = self.others_player_input[-1].copy()
@@ -565,6 +581,8 @@ class Buffer:
         for batch_id in range(num_mini_batch):
             start_id = batch_id * num_envs_per_batch
             ids = perm[start_id : start_id + num_envs_per_batch]
+            token_batch = _flatten(T, N , self.token_input[:-1, ids])
+            token_embed_batch = _flatten(T, N , self.token_embed_input[:-1, ids])
             rules_batch = _flatten(T, N, self.rules_input[:-1, ids])
             player_batch = _flatten(T, N, self.player_input[:-1, ids])
             others_player_batch = _flatten(T, N, self.others_player_input[:-1, ids])
@@ -646,6 +664,8 @@ class Buffer:
             rnn_hidden_states_batch = rnn_hidden_states_batch.squeeze(0)
 
             yield (
+                token_batch,
+                token_embed_batch,
                 rules_batch,
                 player_batch,
                 others_player_batch,

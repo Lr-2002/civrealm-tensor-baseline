@@ -47,6 +47,8 @@ class TensorBaselineEnv:
         obs_ori, _ = self.tensor_env.reset()
         obs = {}
         for key in [
+            'token',
+            'token_embed',
             "rules",
             "map",
             "player",
@@ -94,6 +96,8 @@ class TensorBaselineEnv:
         # print(self.tensor_env.get_recent_scores())
         obs = {}
         for key in [
+            'token',
+            'token_embed',
             "rules",
             "map",
             "player",

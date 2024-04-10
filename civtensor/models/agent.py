@@ -31,6 +31,8 @@ class Agent(nn.Module):
 
     def init_network(self, args):
         # obtain input dimensions. TODO: be consistent with env
+        self.token_dim = self.observation_spaces['token'].shape[0]
+        self.token_embed_dim = self.observation_spaces['token_embed'].shape[0]
         self.rules_dim = self.observation_spaces["rules"].shape[0]
         self.player_dim = self.observation_spaces["player"].shape[0]
         self.others_player_dim = self.observation_spaces["others_player"].shape[
@@ -62,6 +64,14 @@ class Agent(nn.Module):
         self.n_layers = args["n_layers"]  # 2
         self.drop_prob = args["drop_prob"]  # 0
         self.n_rnn_layers = args["n_rnn_layers"]  # 2
+
+        self.token_encoder = nn.Sequential(
+            nn.Linear(self.token_dim, self.hidden_dim), nn.ReLU()
+        )
+
+        self.token_embed_encoder = nn.Sequential(
+            nn.Linear(self.token_embed_dim, self.hidden_dim), nn.ReLU()
+        )
 
         # initialize encoders
         self.rules_encoder = nn.Sequential(
@@ -204,6 +214,8 @@ class Agent(nn.Module):
 
     def encoding_step(
         self,
+        token,
+        token_embed,
         rules,
         player,
         others_player,
@@ -238,6 +250,8 @@ class Agent(nn.Module):
         map = map.permute(0, 3, 1, 2)  # (batch_size, map_channels, x_size, y_size)
 
         # encoding step
+        token_encoded = self.token_encoder(token)
+        token_embed_encoded = self.token_embed_encoder(token_embed)
         rules_encoded = self.rules_encoder(rules)  # (batch_size, hidden_dim)
 
         player_encoded = self.player_encoder(player)  # (batch_size, hidden_dim)
@@ -327,6 +341,8 @@ class Agent(nn.Module):
 
         global_encoding = torch.stack(
             [
+                token_encoded,
+                token_embed_encoded,
                 rules_encoded,
                 player_encoded,
                 others_player_global_encoding,
@@ -348,6 +364,8 @@ class Agent(nn.Module):
 
     def forward(
         self,
+        token,
+        token_embed,
         rules,
         player,
         others_player,
@@ -400,6 +418,8 @@ class Agent(nn.Module):
             mask: (batch_size, 1)
             deterministic: if True use argmax, else sample from distribution
         """
+        token = torch.from_numpy(token).to(self.device)
+        token_embed = torch.from_numpy(token_embed).to(self.device)
         rules = torch.from_numpy(rules).to(self.device)
         player = torch.from_numpy(player).to(self.device)
         others_player = torch.from_numpy(others_player).to(self.device)
@@ -428,6 +448,8 @@ class Agent(nn.Module):
 
         # encoding step
         global_encoding_processed, unit_encoded, city_encoded, dipl_encoded = self.encoding_step(
+            token,
+            token_embed,
             rules,
             player,
             others_player,
@@ -586,6 +608,8 @@ class Agent(nn.Module):
 
     def evaluate_actions(
         self,
+        token_batch,
+        token_embed_batch,
         rules_batch,  # (episode_length * num_envs_per_batch, rules_dim)
         player_batch,  # (episode_length * num_envs_per_batch, player_dim)
         others_player_batch,  # (episode_length * num_envs_per_batch, n_max_others_player, others_player_dim)
@@ -623,6 +647,8 @@ class Agent(nn.Module):
     ):
         # encoding step
         global_encoding_processed, unit_encoded, city_encoded, dipl_encoded = self.encoding_step(
+            token_batch,
+            token_embed_batch,
             rules_batch,
             player_batch,
             others_player_batch,

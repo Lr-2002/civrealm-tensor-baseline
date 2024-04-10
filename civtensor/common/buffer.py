@@ -65,7 +65,7 @@ class Buffer:
         )
         self.token_input = np.zeros(
             (self.episode_length + 1, self.n_rollout_threads, self.token_dim),
-            dtype=np.int32,
+            dtype=np.float32,
         )
         self.token_embed_input = np.zeros(
             (self.episode_length + 1, self.n_rollout_threads, self.token_embed_dim),

@@ -104,6 +104,8 @@ class PPO:
 
     def update(self, sample, value_normalizer=None):
         (
+            token_batch,
+            token_embed_batch,
             rules_batch,
             player_batch,
             others_player_batch,
@@ -153,6 +155,8 @@ class PPO:
             bad_masks_batch,
         ) = sample
 
+        token_batch = check(token_batch).to(self.device)
+        token_embed_batch = check(token_embed_batch).to(self.device)
         rules_batch = check(rules_batch).to(self.device)
         player_batch = check(player_batch).to(self.device)
         others_player_batch = check(others_player_batch).to(self.device)
@@ -237,6 +241,8 @@ class PPO:
             tech_action_type_dist_entropy,
             value_preds_batch,
         ) = self.agent.evaluate_actions(
+            token_batch,
+            token_embed_batch,
             rules_batch,
             player_batch,
             others_player_batch,

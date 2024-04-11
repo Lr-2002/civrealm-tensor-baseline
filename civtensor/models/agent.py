@@ -738,7 +738,7 @@ class Agent(nn.Module):
         # dipl action type head
         dipl_action_input = torch.cat([rnn_out, dipl_chosen_encoded], dim=-1)
         chosen_dipl_action_type_mask = dipl_action_type_masks_batch[
-            torch.arange(batch_size), dipl_id_batch.squeeze(), :
+            torch.arange(batch_size), dipl_id_batch.squeeze().cpu(), :
         ]  # TODO: check whether gradient is correct
         dipl_action_type_distribution = self.dipl_action_head(
             dipl_action_input, chosen_dipl_action_type_mask

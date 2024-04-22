@@ -9,6 +9,7 @@ from civtensor.models.layers.scale_dot_product_attention import ScaleDotProductA
 
 
 class MultiHeadAttention(nn.Module):
+
     def __init__(self, d_model, n_head):
         super(MultiHeadAttention, self).__init__()
         self.n_head = n_head
@@ -24,9 +25,6 @@ class MultiHeadAttention(nn.Module):
 
         # 2. split tensor by number of heads
         q, k, v = self.split(q), self.split(k), self.split(v)
-
-        if mask is not None:
-            mask = mask.unsqueeze(1).unsqueeze(2).squeeze(-1)
 
         # 3. do scale dot product to compute similarity
         out, attention = self.attention(q, k, v, mask=mask)

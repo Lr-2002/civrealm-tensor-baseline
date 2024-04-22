@@ -25,6 +25,10 @@ class TransformerEncoder(nn.Module):
         )
 
     def forward(self, x, src_mask):
+        print('the shape of x is', x.shape)
+        if src_mask is not None:
+
+            print(  src_mask.shape)
         for layer in self.layers:
             x = layer(x, src_mask)
 

@@ -73,7 +73,6 @@ class Agent(nn.Module):
             nn.Linear(self.token_embed_dim, self.hidden_dim), nn.ReLU()
         )
 
-        # initialize encoders
         self.rules_encoder = nn.Sequential(
             nn.Linear(self.rules_dim, self.hidden_dim), nn.ReLU()
         )
@@ -144,17 +143,7 @@ class Agent(nn.Module):
             nn.LazyLinear(256),
             nn.ReLU(),
         )
-        self.tmp_encoder = nn.Sequential(
-            nn.Conv2d(112, 64, 3, 2),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.Conv2d(64, 64, 3, 2),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.Conv2d(64, 32, 3, 2),
-            nn.BatchNorm2d(32),
-            nn.ReLU(),
-        )
+
 
         # initialize global transformer
         self.global_transformer = TransformerEncoder(
@@ -240,18 +229,15 @@ class Agent(nn.Module):
             nn.ReLU(),
         )
         self.map_decoder = nn.Sequential(
-            nn.LazyLinear(256),
+            nn.Linear(256, 1024),
             nn.ReLU(),
-            nn.Linear(256, 32*9*6),
+            nn.Linear(1024, 32*21*14),
             nn.ReLU(),
-            Reshape((32,9,6)),
-            nn.ConvTranspose2d(32, 64, 3,2),
+            Reshape((32,21,14)),
+            nn.ConvTranspose2d(32, 64, 2,2),
             nn.BatchNorm2d(64),
             nn.ReLU(),
-            nn.ConvTranspose2d(64, 64, 3, 2),
-            nn.BatchNorm2d(64),
-            nn.ReLU(),
-            nn.ConvTranspose2d(64, 112, 3, 2),
+            nn.ConvTranspose2d(64, 112, 2, 2),
             nn.BatchNorm2d(112),
             nn.ReLU(),
         )
@@ -881,6 +867,7 @@ class Agent(nn.Module):
         return (
             actor_type_log_probs_batch,
             actor_type_dist_entropy,
+
             city_id_log_probs_batch,
             city_action_type_log_probs_batch,
             city_action_type_dist_entropy,
@@ -904,5 +891,5 @@ class Reshape(nn.Module):
         self.shape = shape
 
     def forward(self, input):
-        print('target shape is ', input.size(0), self.shape)
+
         return input.view(input.size(0), *self.shape)

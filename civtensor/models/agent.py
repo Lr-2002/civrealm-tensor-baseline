@@ -4,6 +4,7 @@ import torch.nn as nn
 from civtensor.models.base.distributions import Categorical
 from civtensor.models.base.rnn import RNNLayer
 from civtensor.models.encoder.transformer_encoder import TransformerEncoder
+from civtensor.models.decoder.transformer_decoder import TransformerDecoder
 from civtensor.models.pointer_network.pointer_network import PointerNetwork
 
 
@@ -173,7 +174,6 @@ class Agent(nn.Module):
         self.others_player_decoder = TransformerEncoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
-
         self.unit_embedding_decoder = nn.Sequential(
             nn.Linear(self.hidden_dim, self.unit_dim), nn.ReLU()
         )

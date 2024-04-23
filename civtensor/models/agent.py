@@ -48,6 +48,12 @@ class Agent(nn.Module):
         self.others_city_dim = self.observation_spaces["others_city"].shape[
             1
         ]  # or Sequence?
+        self.others_player_max_len = self.observation_spaces["others_player"].shape[0]
+        self.unit_max_len = self.observation_spaces["unit"].shape[0]
+        self.city_max_len = self.observation_spaces["city"].shape[0]
+        self.dipl_max_len = self.observation_spaces["dipl"].shape[0]
+        self.others_unit_max_len = self.observation_spaces["others_unit"].shape[0]
+        self.others_city_max_len = self.observation_spaces["others_city"].shape[0]
         self.map_dim = self.observation_spaces["map"].shape
 
         # obtain output dimensions. TODO: be consistent with env
@@ -62,6 +68,7 @@ class Agent(nn.Module):
         self.hidden_dim = args["hidden_dim"]  # 256
         self.rnn_hidden_dim = args["rnn_hidden_dim"]  # 1024
         self.n_head = args["n_head"]  # 2
+        self.vocab_size = args["vocab_size"]
         self.n_layers = args["n_layers"]  # 2
         self.drop_prob = args["drop_prob"]  # 0
         self.n_rnn_layers = args["n_rnn_layers"]  # 2

@@ -55,6 +55,8 @@ model:
   drop_prob: 0
   # number of rnn layers
   n_rnn_layers: 2
+  # number of vocabulary
+  vocab_size: 4096
   # initialization method for network parameters, choose from xavier_uniform_, orthogonal_, ...
   initialization_method: orthogonal_
   # gain of the output layer of the network.

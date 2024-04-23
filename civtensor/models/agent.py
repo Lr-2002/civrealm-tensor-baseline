@@ -317,6 +317,51 @@ class Agent(nn.Module):
 
         self.eps = torch.tensor(1e-8).to(self.device)
 
+    def decoding_step(
+            self,
+            token_encoded,
+            token_embed_encoded,
+            rules_encoded,
+            player_encoded,
+            others_player_encoded,
+            unit_encoded,
+            city_encoded,
+            dipl_encoded,
+            others_unit_encoded,
+            others_city_encoded,
+            map_encoded,
+            others_player_mask_encoded,
+            unit_mask_encoded,
+            city_mask_encoded,
+            others_unit_mask_encoded,
+            others_city_mask_encoded,
+    ):
+        token_decoded = self.token_decoder(token_encoded)
+        token_embed_decoded = self.token_embed_decoder(token_embed_encoded)
+        rules_decoded = self.rules_decoder(rules_encoded)
+        player_decoded = self.player_decoder(player_encoded)
+        others_player_decoded_embedding = self.othersdecoder(others_player_encoded) # todo
+        others_player_decoded = None # self.others_player.shape
+
+        unit_decoded_embedding = self.unit_decoder(unit_encoded)
+        unit_decoded = None
+
+        city_decoded_embedding = self.city_decoder(city_encoded)
+        city_decoded = None
+
+        dipl_decoded_embedding = self.dipl_decoder(dipl_encoded)
+        dipl_decoded = None
+
+        others_unit_embedding = self.others_unit_decoder(others_unit_encoded)
+        others_unit_decoded = None
+
+        others_city_embedding = self.others_city_decoder(others_city_encoded)
+        others_city_decoded = None
+
+
+        map_decoded = self.map_decoder(map_encoded)
+
+
     def encoding_step(
         self,
         token,

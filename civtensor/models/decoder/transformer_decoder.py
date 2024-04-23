@@ -26,6 +26,7 @@ class TransformerDecoder(nn.Module):
         """
         # trg = self.emb(trg)
 
+        # todo how to get the predicted len without the mask
         for layer in self.layers:
             trg = layer(trg, src, trg_mask, src_mask)
 
@@ -33,3 +34,9 @@ class TransformerDecoder(nn.Module):
         output = trg
         # output = self.linear(trg)
         return output
+
+    def decode(self, trg):
+        for layer in self.layers:
+            trg = layer(trg, None, None, None)
+
+        return trg

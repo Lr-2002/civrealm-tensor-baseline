@@ -56,6 +56,14 @@ class Agent(nn.Module):
         self.others_city_max_len = self.observation_spaces["others_city"].shape[0]
         self.map_dim = self.observation_spaces["map"].shape
 
+
+        self.others_player_shape = self.observation_spaces['others_player'].shape
+        self.unit_shape = self.observation_spaces['unit'].shape
+        self.city_shape = self.observation_spaces['city'].shape
+        self.dipl_shape = self.observation_spaces['dipl'].shape
+        self.others_unit_shape = self.observation_spaces['others_unit'].shape
+        self.others_city_shape = self.observation_spaces['others_city'].shape
+        self.map_shape = self.observation_spaces["map"].shape
         # obtain output dimensions. TODO: be consistent with env
         self.actor_type_dim = self.action_spaces["actor_type"].n
         self.city_action_type_dim = self.action_spaces["city_action_type"].n
@@ -340,24 +348,27 @@ class Agent(nn.Module):
         token_embed_decoded = self.token_embed_decoder(token_embed_encoded)
         rules_decoded = self.rules_decoder(rules_encoded)
         player_decoded = self.player_decoder(player_encoded)
-        others_player_decoded_embedding = self.othersdecoder(others_player_encoded) # todo
-        others_player_decoded = None # self.others_player.shape
+        others_player_decoded_embedding = self.othersdecoder(others_player_encoded) # todo 1. next state, 2. this state, 3. next mask, 4. this mask
+        others_player_decoded = self.others_player_embedding_decoder(others_player_decoded_embedding) # self.others_player.shape
+        others_player_decoded = others_player_decoded.view(-1, self.others_player_shape)
 
         unit_decoded_embedding = self.unit_decoder(unit_encoded)
-        unit_decoded = None
+        unit_decoded = self.unit_embedding(unit_decoded_embedding)
+        unit_decoded = unit_decoded.view(-1, self.unit_shape)
 
         city_decoded_embedding = self.city_decoder(city_encoded)
-        city_decoded = None
-
+        city_decoded = self.city_embedding_decoder(city_decoded_embedding)
+        city_decoded = city_decoded.view(-1, self.city_shape)
         dipl_decoded_embedding = self.dipl_decoder(dipl_encoded)
-        dipl_decoded = None
-
+        dipl_decoded = self.dipl_embedding_decoder(dipl_decoded_embedding)
+        dipl_decoded = dipl_decoded.view(-1, self.dipl_shape)
         others_unit_embedding = self.others_unit_decoder(others_unit_encoded)
-        others_unit_decoded = None
+        others_unit_decoded = self.othersemdecoder(others_unit_embedding)
+        others_unit_decoded = others_unit_decoded.view(-1, self.others_unit_shape)
 
         others_city_embedding = self.others_city_decoder(others_city_encoded)
-        others_city_decoded = None
-
+        others_city_decoded = self.others_city_embedding_decoder(others_city_embedding)
+        others_city_decoded = others_city_decoded.view(-1, self.others_city_shape)
 
         map_decoded = self.map_decoder(map_encoded)
 

@@ -178,14 +178,14 @@ class Agent(nn.Module):
             nn.Linear(self.hidden_dim, self.others_player_dim), nn.ReLU()
         )
 
-        self.others_player_decoder = TransformerEncoder(
+        self.others_player_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
         self.unit_embedding_decoder = nn.Sequential(
             nn.Linear(self.hidden_dim, self.unit_dim), nn.ReLU()
         )
 
-        self.unit_decoder = TransformerEncoder(
+        self.unit_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
 
@@ -193,7 +193,7 @@ class Agent(nn.Module):
             nn.Linear(self.hidden_dim, self.city_dim), nn.ReLU()
         )
 
-        self.city_decoder = TransformerEncoder(
+        self.city_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
 
@@ -201,7 +201,7 @@ class Agent(nn.Module):
             nn.Linear(self.hidden_dim, self.dipl_dim), nn.ReLU()
         )
 
-        self.dipl_decoder = TransformerEncoder(
+        self.dipl_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
 
@@ -209,7 +209,7 @@ class Agent(nn.Module):
             nn.Linear(self.hidden_dim, self.others_unit_dim), nn.ReLU()
         )
 
-        self.others_unit_decoder = TransformerEncoder(
+        self.others_unit_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
 
@@ -217,7 +217,7 @@ class Agent(nn.Module):
             nn.Linear(self.hidden_dim, self.others_city_dim), nn.ReLU()
         )
     
-        self.others_city_decoder = TransformerEncoder(
+        self.others_city_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
         # todo fix use transform cnn
@@ -250,7 +250,7 @@ class Agent(nn.Module):
         )
 
         # initialize global transformer
-        self.global_transformer_decoder = TransformerEncoder(
+        self.global_transformer_decoder = TransformerDecoder(
             self.hidden_dim, self.hidden_dim, self.n_head, self.n_layers, self.drop_prob
         )
 

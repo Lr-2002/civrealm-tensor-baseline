@@ -330,11 +330,11 @@ class Agent(nn.Module):
             others_unit_encoded,
             others_city_encoded,
             map_encoded,
-            others_player_mask_encoded,
-            unit_mask_encoded,
-            city_mask_encoded,
-            others_unit_mask_encoded,
-            others_city_mask_encoded,
+            others_player,
+            unit_mask,
+            city_mask,
+            others_unit_mask,
+            others_city_mask,
     ):
         token_decoded = self.token_decoder(token_encoded)
         token_embed_decoded = self.token_embed_decoder(token_embed_encoded)

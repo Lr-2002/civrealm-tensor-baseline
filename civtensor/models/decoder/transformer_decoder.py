@@ -19,6 +19,11 @@ class TransformerDecoder(nn.Module):
         # self.linear = nn.Linear(d_model, dec_voc_size)
 
     def forward(self, trg, src, trg_mask, src_mask):
+        """
+        accept trg and src is  the next state(embedding) and trg(encoded embedding)
+        ans trg_msk and src_msk are from the observation
+
+        """
         # trg = self.emb(trg)
 
         for layer in self.layers:
